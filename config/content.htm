@@ -16,7 +16,79 @@
 <h2>repo</h2>
 <h1>Tasks</h1>
 <h2>task1</h2>
-<h2>task2</h2>
+<p>這段程式運行過後這段程式就會跑出我們這組github 的帳號</p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">from browser import html, document, ajax
+
+# 網頁上學員資料的 URL
+url = "https://mde.tw/list/2b.txt"
+
+# 只顯示特定的學號列表
+selected_student_ids = ['41223211', '41223212', '41223221', '41223243', '41223245', '41223251']
+
+# 回呼函式處理資料讀取
+def on_complete(req):
+    if req.status == 200:
+        # 將資料分行並去除空行
+        data = req.text.splitlines()
+        # 顯示資料取得成功的訊息
+        document["brython_div1"] &lt;= f"✅ 成功取得資料，共 {len(data) - 1} 筆"  # 顯示成功訊息
+        document["brython_div1"] &lt;= html.BR()  # 插入換行
+
+        # 跳過標題行
+        all_stud = data[1:]
+
+        # 顯示學員的學號和 GitHub 連結，只顯示選定的學號
+        for stud in all_stud:
+            try:
+                # 去除多餘的空白並分割學號和帳號
+                stud_info = stud.strip().split()
+
+                # 如果這行包含學號和帳號，則提取學號和帳號
+                if len(stud_info) &gt; 1:
+                    # 學號部分
+                    student_id = stud_info[0]
+                    # 帳號部分
+                    github_account = stud_info[1]
+
+                    # 只顯示在 selected_student_ids 中的學號
+                    if student_id in selected_student_ids:
+                        # 檢查帳號是否包含 "hw-"，如果是，則根據學號生成 GitHub 連結
+                        if "hw-" in github_account:
+                            github_link = f"https://github.com/mdecd2025/hw-{student_id}"
+                        else:
+                            # 檢查學號和帳號是否一致
+                            if student_id == github_account:
+                                # 如果學號和帳號一致，根據學號生成 GitHub 連結
+                                github_link = f"https://github.com/mdecd2025/hw-{student_id}"
+                            else:
+                                # 如果學號和帳號不一致，根據帳號生成 GitHub 連結
+                                github_link = f"https://github.com/mdecd2025/hw-{github_account}"
+
+                        # 顯示學員的學號和帳號並附上 GitHub 連結
+                        document["brython_div1"] &lt;= f"學號: {student_id} - "
+                        document["brython_div1"] &lt;= html.A(github_account, href=github_link, target="_blank")
+                        document["brython_div1"] &lt;= html.BR()  # 插入換行
+            except Exception as e:
+                # 如果格式有問題，顯示錯誤
+                document["brython_div1"] &lt;= f"❌ 解析錯誤 - {str(e)}"
+                document["brython_div1"] &lt;= html.BR()
+    else:
+        # 如果無法讀取資料
+        document["brython_div1"] &lt;= f"❌ 無法取得資料，錯誤代碼: {req.status}"
+
+# 使用 AJAX 讀取資料
+ajax.get(url, oncomplete=on_complete)
+
+# 顯示固定的超連結（例如：scrum-1 和 GitHub）
+brython_div1 = document["brython_div1"]
+brython_div1 &lt;= "1. " + html.A("scrum-1", href="https://mdecd2025.github.io/hw-scrum-1")
+brython_div1 &lt;= html.BR()
+brython_div1 &lt;= "2. " + html.A("github.com", href="https://github.com")
+</pre>
+<p></p>
+<p><img alt="" height="225" src="/images/螢幕擷取畫面 2025-03-04 112651.png" width="400"/></p>
+<p></p>
+<p></p><h2>task2</h2>
 <h2>task3</h2>
 <h2>task3</h2>
 <h2>task5</h2>
